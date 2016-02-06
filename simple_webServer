@@ -1,1 +1,29 @@
+import socket
+import sys
+
+host = ''
+port = 1234
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+try:
+    s.bind((host, port))
+except socket.error:
+    print("Failed to bind")
+    sys.exit()
+    
+s.listen(5)
+conn, addr = s.accept()
+print('Got a request! - connected to: '+addr[0]+':'+str(addr[1]))
+conn.send(str.encode('Got a Request! - Welcome, type further requests\n'))
+
+while True:
+    data = conn.recv(1000)
+    print('Got a request! - The request was: '+ data.decode('utf-8'))
+    reply = 'The request was: '+ data.decode('utf-8')
+    if not data:
+        break
+    conn.send(str.encode('Got a Request! ' + reply))
+            
+conn.close()
+s.close()
 
